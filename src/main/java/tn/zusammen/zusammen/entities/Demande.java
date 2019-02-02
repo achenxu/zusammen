@@ -11,8 +11,8 @@ public class Demande {
     @Id
     private String etat;
 
-    List<Voyage> voyages;
-    List<User> users;
+    private List<Voyage> voyages;
+    private List<User> users;
 
     public Demande(String etat, List<Voyage> voyages, List<User> users) {
         this.etat = etat;

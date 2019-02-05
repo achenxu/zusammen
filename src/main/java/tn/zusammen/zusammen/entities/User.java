@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
 
     @Id
-    private String cin;
+    private String email;
 
     private String nom;
     private String prenom;
@@ -15,10 +15,19 @@ public class User {
     private ProfilClient profilClient;
     private ProfilVoyageur profilVoyageur;
     private ProfilConducteur profilConducteur;
-    private String email;
     private String mdp;
     private Boolean activated;
     private Role role;
+    private String cin;
+
+    public User() {
+    }
+
+    public User(String email, String mdp, Role role) {
+        this.email = email;
+        this.mdp = mdp;
+        this.role = role;
+    }
 
     public User(String cin, String nom, String prenom, String adresse, ProfilClient profilClient, ProfilVoyageur profilVoyageur, ProfilConducteur profilConducteur, String email, String mdp, Boolean activated, Role role) {
         this.cin = cin;

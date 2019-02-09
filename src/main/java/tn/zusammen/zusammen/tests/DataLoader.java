@@ -22,7 +22,7 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         userRepository.deleteAll();
         roleRepository.deleteAll();
-        userRepository.save(new User("admin", "admin", Role.ADMIN));
+        userRepository.save(new User("admin@admin", "admin", Role.ADMIN));
     }
 
 }

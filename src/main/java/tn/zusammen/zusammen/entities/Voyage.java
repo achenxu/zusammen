@@ -13,6 +13,7 @@ public class Voyage {
     private Long prix;
     private List<Localisation> trajet;
     private User conducteur;
+    private Long nbrePlaceRest;
 
     public Voyage(String id, String etat, Long prix, List<Localisation> trajet, User conducteur) {
         this.id = id;
@@ -60,6 +61,14 @@ public class Voyage {
 
     public void setConducteur(User conducteur) {
         this.conducteur = conducteur;
+    }
+
+    public Long getNbrePlaceRest() {
+        return nbrePlaceRest;
+    }
+
+    public void setNbrePlaceRest(Long nbrePlaceRest) {
+        this.nbrePlaceRest = nbrePlaceRest;
     }
 
 }

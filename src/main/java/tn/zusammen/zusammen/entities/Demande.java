@@ -9,8 +9,9 @@ import java.util.List;
 public class Demande {
 
     @Id
-    private String etat;
+    private String id;
 
+    private String etat;
     private List<Voyage> voyages;
     private List<User> users;
 
@@ -18,6 +19,14 @@ public class Demande {
         this.etat = etat;
         this.voyages = voyages;
         this.users = users;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEtat() {

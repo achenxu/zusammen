@@ -3,6 +3,7 @@ package tn.zusammen.zusammen.tests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import tn.zusammen.zusammen.entities.Role;
 import tn.zusammen.zusammen.entities.User;
@@ -10,6 +11,7 @@ import tn.zusammen.zusammen.repositories.RoleRepository;
 import tn.zusammen.zusammen.repositories.UserRepository;
 
 @Component
+@Profile("develop")
 public class DataLoader implements ApplicationRunner {
 
     @Autowired

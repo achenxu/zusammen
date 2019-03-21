@@ -1,4 +1,4 @@
-package tn.zusammen.zusammen.tests;
+package tn.zusammen.zusammen;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

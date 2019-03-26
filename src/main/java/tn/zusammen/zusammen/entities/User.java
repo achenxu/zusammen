@@ -1,134 +1,161 @@
 package tn.zusammen.zusammen.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import tn.zusammen.zusammen.enums.Role;
 
-@Document(collection="users")
-public class User {
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+
+@Document
+public final class User implements UserDetails {
 
     @Id
+    private String id;
+
+    @NotBlank
+    @Size(min = 3)
+    @Indexed(unique = true)
+    private String username;
+
+    @NotBlank
+    @Email
+    @Indexed(unique = true)
     private String email;
 
-    private String nom;
-    private String prenom;
-    private String adresse;
-    private ProfilClient profilClient;
-    private ProfilVoyageur profilVoyageur;
-    private ProfilConducteur profilConducteur;
-    private String mdp;
-    private Boolean activated;
-    private Role role;
-    private String cin;
+    @NotNull
+    @Size(min = 60, max = 60)
+    private String password;
 
-    public User() {
-    }
+    @DBRef
+    private MemberProfile memberProfile;
 
-    public User(String email, String mdp, Role role) {
+    @DBRef
+    private PassengerProfile passengerProfile;
+
+    @DBRef
+    private LinkedHashSet<RideRequest> rideRequests;
+
+    @DBRef
+    private LinkedHashSet<RideOffer> rideOffers;
+
+    @DBRef
+    private DriverProfile driverProfile;
+
+    @NotNull
+    @Size(min = 1, max = 2, message = "User should have exactly 1 or 2 roles.")
+    private EnumSet<Role> roles;
+
+    @PersistenceConstructor
+    public User(@NotBlank @Size(min = 3) final String username,
+                @NotBlank @Email final String email,
+                @NotNull @Size(min = 60, max = 60) final String password) {
+        this.username = username;
         this.email = email;
-        this.mdp = mdp;
-        this.role = role;
+        this.password = password;
+        this.rideRequests = new LinkedHashSet<>();
+        this.rideOffers = new LinkedHashSet<>();
     }
 
-    public User(String cin, String nom, String prenom, String adresse, ProfilClient profilClient, ProfilVoyageur profilVoyageur, ProfilConducteur profilConducteur, String email, String mdp, Boolean activated, Role role) {
-        this.cin = cin;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.adresse = adresse;
-        this.profilClient = profilClient;
-        this.profilVoyageur = profilVoyageur;
-        this.profilConducteur = profilConducteur;
-        this.email = email;
-        this.mdp = mdp;
-        this.activated = activated;
-        this.role = role;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
-    public String getCin() {
-        return cin;
+    @Override
+    public String getPassword() {
+        return password;
     }
 
-    public void setCin(String cin) {
-        this.cin = cin;
+    @Override
+    public String getUsername() {
+        return username;
     }
 
-    public String getNom() {
-        return nom;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public String getPrenom() {
-        return prenom;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
-    public String getAdresse() {
-        return adresse;
-    }
-
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
-    }
-
-    public ProfilClient getProfilClient() {
-        return profilClient;
-    }
-
-    public void setProfilClient(ProfilClient profilClient) {
-        this.profilClient = profilClient;
-    }
-
-    public ProfilVoyageur getProfilVoyageur() {
-        return profilVoyageur;
-    }
-
-    public void setProfilVoyageur(ProfilVoyageur profilVoyageur) {
-        this.profilVoyageur = profilVoyageur;
-    }
-
-    public ProfilConducteur getProfilConducteur() {
-        return profilConducteur;
-    }
-
-    public void setProfilConducteur(ProfilConducteur profilConducteur) {
-        this.profilConducteur = profilConducteur;
+    public String getId() {
+        return id;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public MemberProfile getMemberProfile() {
+        return memberProfile;
+    }
+
+    public PassengerProfile getPassengerProfile() {
+        return passengerProfile;
+    }
+
+    public LinkedHashSet<RideRequest> getRideRequests() {
+        return rideRequests;
+    }
+
+    public LinkedHashSet<RideOffer> getRideOffers() {
+        return rideOffers;
+    }
+
+    public DriverProfile getDriverProfile() {
+        return driverProfile;
+    }
+
+    public EnumSet<Role> getRoles() {
+        return roles;
+    }
+
+    public void setEmail(final String email) {
         this.email = email;
     }
 
-    public String getMdp() {
-        return mdp;
+    public void setPassword(final String password) {
+        this.password = password;
     }
 
-    public void setMdp(String mdp) {
-        this.mdp = mdp;
+    public void setMemberProfile(final MemberProfile memberProfile) {
+        this.memberProfile = memberProfile;
     }
 
-    public Boolean getActivated() {
-        return activated;
+    public void setPassengerProfile(final PassengerProfile passengerProfile) {
+        this.passengerProfile = passengerProfile;
     }
 
-    public void setActivated(Boolean activated) {
-        this.activated = activated;
+    public void setDriverProfile(final DriverProfile driverProfile) {
+        this.driverProfile = driverProfile;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(final EnumSet<Role> roles) {
+        this.roles = roles;
     }
 
 }

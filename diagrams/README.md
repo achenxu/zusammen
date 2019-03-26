@@ -2,8 +2,8 @@
 This is a [Visual Paradigm](https://www.visual-paradigm.com/download/community.jsp)
 project.
 
-## Diagramme de cas d'utilisation global
-![Diagramme de cas d'utilisation global](cas-utilisation-global.png)
+## General use case
+![General use case](general-use-case.png)
 
-## Diagramme de classes
-![Diagramme de classes](diagramme-classes.png)
+## Class diagram
+![Class diagram](class-diagram.png)

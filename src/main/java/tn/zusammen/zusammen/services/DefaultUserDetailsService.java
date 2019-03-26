@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import tn.zusammen.zusammen.entities.User;
 import tn.zusammen.zusammen.repositories.UserRepository;
 
 @Service
@@ -14,18 +15,13 @@ public class DefaultUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        tn.zusammen.zusammen.entities.User user = userRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findUserByUsername(username);
 
         if (user != null) {
-            return org.springframework.security.core.userdetails.User
-                    .withDefaultPasswordEncoder()
-                    .username(user.getEmail())
-                    .password(user.getMdp())
-                    .roles(user.getRole().toString())
-                    .build();
+            return user;
         } else {
-            throw new UsernameNotFoundException(email + "was not found.");
+            throw new UsernameNotFoundException(username + "was not found.");
         }
     }
 

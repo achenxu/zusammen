@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
     <head>
         <meta charset="utf-8">
@@ -10,10 +13,95 @@
         <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
 
         <link rel="stylesheet" href="css/style.css">
+
+        <th:block layout:fragment="stylesheet"></th:block>
     </head>
 
     <body>
         <div class="container-scroller" layout:fragment="main">
+            <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row"
+                 layout:fragment="navbar">
+                <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                    <a class="navbar-brand brand-logo" href="/"><img alt="logo" src="images/logo.svg"/></a>
+                    <a class="navbar-brand brand-logo-mini" href="/"><img alt="logo" src="images/logo-mini.svg"/></a>
+                </div>
+                <div class="navbar-menu-wrapper d-flex align-items-stretch" th:if="${username != null}">
+                    <ul class="navbar-nav navbar-nav-right">
+                        <li class="nav-item nav-profile dropdown">
+                            <a aria-expanded="false"
+                               class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#"
+                               id="profileDropdown">
+                                <div class="nav-profile-text">
+                                    <p class="mb-1 text-black" th:text="${username}"></p>
+                                </div>
+                            </a>
+                            <div aria-labelledby="profileDropdown" class="dropdown-menu navbar-dropdown">
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" th:href="@{/logout}">
+                                    <i class="mdi mdi-logout mr-2 text-primary"></i>
+                                    Signout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
+                            type="button">
+                        <span class="mdi mdi-menu"></span>
+                    </button>
+                </div>
+            </nav>
+            <div class="container-fluid page-body-wrapper"
+                 layout:fragment="container">
+                <nav class="sidebar sidebar-offcanvas"
+                     id="sidebar"
+                     layout:fragment="sidebar">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/find-ride-offer">
+                                <span class="menu-title">Find a ride</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/add-ride-offer">
+                                <span class="menu-title">Offer a ride</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/manage-own-ride-requests">
+                                <span class="menu-title">My requests</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/manage-own-ride-offers">
+                                <span class="menu-title">My offers</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/manage-members">
+                                <span class="menu-title">Members</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/manage-all-ride-offers">
+                                <span class="menu-title">All offers</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="main-panel"
+                     layout:fragment="panel">
+                    <div class="content-wrapper" layout:fragment="wrapper">
+                        <div class="page-header">
+                            <h3 class="page-title" th:text="${title}"></h3>
+                        </div>
+                        <div layout:fragment="content">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script src="vendors/js/vendor.bundle.base.js"></script>
@@ -21,6 +109,8 @@
 
         <script src="js/off-canvas.js"></script>
         <script src="js/misc.js"></script>
+
+        <th:block layout:fragment="script"></th:block>
     </body>
 
 </html>

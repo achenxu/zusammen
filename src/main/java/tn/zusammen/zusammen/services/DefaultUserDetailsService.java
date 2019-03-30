@@ -9,7 +9,7 @@ import tn.zusammen.zusammen.entities.User;
 import tn.zusammen.zusammen.repositories.UserRepository;
 
 @Service
-public class DefaultUserDetailsService implements UserDetailsService {
+public final class DefaultUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;

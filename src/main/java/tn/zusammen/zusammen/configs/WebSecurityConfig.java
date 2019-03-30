@@ -27,7 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/vendors/**",
                         "/js/**",
                         "/css/**",
-                        "/fonts/**"
+                        "/fonts/**",
+                        "/images/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()

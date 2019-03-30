@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="meta-layout">
+
+    <head>
+        <title>Find a ride</title>
+        <th:block layout:fragment="stylesheet">
+            <style>
+                #leaving-from-map,
+                #going-to-map {
+                    height: 180px;
+                }
+            </style>
+        </th:block>
+    </head>
+
+    <body>
+        <div layout:fragment="content">
+            <div class="row">
+                <div class="col-md-6 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Leaving from</h4>
+                            <p class="card-description">
+                                Where would you like to be picked up?
+                            </p>
+                            <div id="leaving-from-map"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Going to</h4>
+                            <p class="card-description">
+                                Where would you like to be dropped off?
+                            </p>
+                            <div id="going-to-map"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Date and time</h4>
+                            <p class="card-description">
+                                When are you going?
+                            </p>
+                            <form class="form-sample"
+                                  action="#"
+                                  th:action="@{/find-ride-offer}"
+                                  th:object="${findRideOfferFormDTO}"
+                                  method="post">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control"
+                                               placeholder="Date and time"
+                                               aria-label="Date and time"
+                                               aria-describedby="basic-addon2"
+                                               id="going-at"
+                                               data-toggle="datetimepicker"
+                                               data-target="#going-at"
+                                               th:field="*{goingAt}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-sm btn-gradient-primary"
+                                                    type="submit">
+                                                Search
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="hidden"
+                                       id="leaving-from-latitude"
+                                       th:field="*{leavingFromLatitude}">
+                                <input type="hidden"
+                                       id="leaving-from-longitude"
+                                       th:field="*{leavingFromLongitude}">
+                                <input type="hidden"
+                                       id="going-to-latitude"
+                                       th:field="*{goingToLatitude}">
+                                <input type="hidden"
+                                       id="going-to-longitude"
+                                       th:field="*{goingToLongitude}">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <th:block layout:fragment="script">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Geolocation/1.0.50/jquery.geolocation.js">
+            </script>
+            <script>
+                $(function() {
+                    $('#going-at').datetimepicker({
+                        defaultDate: new Date()
+                    });
+                });
+
+                function initMaps() {
+                    var leavingFromMap;
+                    var goingToMap;
+
+                    var leavingFromCircle;
+                    var goingToCircle;
+
+                    var leavingFromInitialPosition = [
+                        36.83113422277796,
+                        10.147884084661849
+                    ];
+
+                    var goingToInitialPosition = [
+                        36.83385638712979,
+                        10.147990952798748
+                    ];
+
+                    leavingFromMap = L.map(
+                        'leaving-from-map', {
+                            zoomControl: false
+                        }).setView(leavingFromInitialPosition, 13);
+                    goingToMap = L.map(
+                        'going-to-map', {
+                            zoomControl: false
+                        }).setView(goingToInitialPosition, 13);
+
+                    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                        maxZoom: 18,
+                        id: 'mapbox.streets',
+                        accessToken: 'pk.eyJ1IjoiYW1pbmVieSIsImEiOiJjanIyazlyaDQxNWRrNDRxcTVjNG53cnJ4In0.rhjio7NdjP3UnK40CJsSVQ'
+                    }).addTo(leavingFromMap);
+
+                    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                        maxZoom: 18,
+                        id: 'mapbox.streets',
+                        accessToken: 'pk.eyJ1IjoiYW1pbmVieSIsImEiOiJjanIyazlyaDQxNWRrNDRxcTVjNG53cnJ4In0.rhjio7NdjP3UnK40CJsSVQ'
+                    }).addTo(goingToMap);
+
+                    leavingFromCircle = L.circle(leavingFromInitialPosition, {
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.5,
+                        radius: 1000
+                    }).addTo(leavingFromMap);
+
+                    goingToCircle = L.circle(goingToInitialPosition, {
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.5,
+                        radius: 1000
+                    }).addTo(goingToMap);
+
+                    $('#leaving-from-latitude').val(leavingFromInitialPosition[0]);
+                    $('#leaving-from-longitude').val(leavingFromInitialPosition[1]);
+                    $('#going-to-latitude').val(goingToInitialPosition[0]);
+                    $('#going-to-longitude').val(goingToInitialPosition[1]);
+
+                    leavingFromMap.on('click', function (event) {
+                        if (leavingFromCircle) {
+                            leavingFromMap.removeLayer(leavingFromCircle);
+                        }
+
+                        leavingFromCircle = L.circle([event.latlng.lat, event.latlng.lng], {
+                            color: 'red',
+                            fillColor: '#f03',
+                            fillOpacity: 0.5,
+                            radius: 1000
+                        }).addTo(leavingFromMap);
+
+                        $('#leaving-from-latitude').val(event.latlng.lat);
+                        $('#leaving-from-longitude').val(event.latlng.lng);
+                    });
+
+                    goingToMap.on('click', function (event) {
+                        if (goingToCircle) {
+                            goingToMap.removeLayer(goingToCircle);
+                        }
+
+                        goingToCircle = L.circle([event.latlng.lat, event.latlng.lng], {
+                            color: 'red',
+                            fillColor: '#f03',
+                            fillOpacity: 0.5,
+                            radius: 1000
+                        }).addTo(goingToMap);
+
+                        $('#going-to-latitude').val(event.latlng.lat);
+                        $('#going-to-longitude').val(event.latlng.lng);
+                    });
+
+                    $.geolocation.getCurrentPosition(function (position) {
+                        var pos = [
+                            position.coords.latitude,
+                            position.coords.longitude
+                        ];
+
+                        leavingFromMap.setView(pos, 13);
+                        goingToMap.setView(pos, 13);
+
+                        if (leavingFromCircle) {
+                            leavingFromMap.removeLayer(leavingFromCircle);
+                        }
+                        leavingFromCircle = L.circle(pos, {
+                            color: 'red',
+                            fillColor: '#f03',
+                            fillOpacity: 0.5,
+                            radius: 1000
+                        }).addTo(leavingFromMap);
+
+                        if (goingToCircle) {
+                            goingToMap.removeLayer(goingToCircle);
+                        }
+                        goingToCircle = L.circle(pos, {
+                            color: 'red',
+                            fillColor: '#f03',
+                            fillOpacity: 0.5,
+                            radius: 1000
+                        }).addTo(goingToMap);
+
+                        $('#leaving-from-latitude').val(position.coords.latitude);
+                        $('#leaving-from-longitude').val(position.coords.longitude);
+                        $('#going-to-latitude').val(position.coords.latitude);
+                        $('#going-to-longitude').val(position.coords.longitude);
+                    })
+                }
+
+                $(document).ready(initMaps());
+            </script>
+        </th:block>
+    </body>
+
+</html>
